@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Александр Ершов](https://up.htmlacademy.ru/univer-js2/2/user/2220089).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Лепёшкин](https://htmlacademy.ru/profile/spearance).
 
 ---
 
