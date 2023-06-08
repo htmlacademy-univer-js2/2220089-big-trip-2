@@ -1,34 +1,43 @@
-import FiltersView from '../view/filters.js';
-import SortingView from '../view/sorting.js';
-import PointMenuView from '../view/path-creating.js';
-import EditPointView from '../view/path-editing.js';
-import PointView from '../view/path-pointing.js';
-import { render } from '../render.js';
+import EventAddView from '../view/event-add-view';
+import EventView from '../view/event-view';
+import EventListView from '../view/event-list-view';
+import EventEditView from '../view/event-edit-view';
+import SortView from '../view/sort-view';
+import EventOffersView from '../view/event-offers-view';
+import EventDestinationView from '../view/event-destination-view';
+import { render } from '../render';
 
-export default class DefaultMarkupPresenter {
-  constructor() {
-    this.filters = new FiltersView();
-    this.sortingButtons = new SortingView();
-    this.pointMenu = new PointMenuView();
-    this.editMenu = new EditPointView();
-    this.tripPoint = new PointView();
-    this.filtersWrapper = document.querySelector('.trip-controls__filters');
-    this.tripPointsSection = document.querySelector('.trip-events');
-    this.pointsList = document.createElement('ul');
+const minIndex = 2;
+
+export default class TripPresenter{
+  constructor(tripEventsComponent, tripEventsModel, offersModel){
+    this.tripEventsModel = tripEventsModel;
+    this.tripEvents = [...this.tripEventsModel.getTripEvents()];
+
+    this.offersModel = offersModel;
+    this.offersByType = [...this.offersModel.getOffersByType()];
+
+    this.tripEventsComponent = tripEventsComponent;
+    this.tripEventsList = new EventListView();
+
+    this.addEvent = new EventAddView(this.tripEvents[0]);
+    this.editEvent = new EventEditView(this.tripEvents[1]);
   }
 
-  createToolsMarkup() {
-    render(this.filters.getElement(), this.filtersWrapper);
-    render(this.sortingButtons.getElement(), this.tripPointsSection);
+  renderTripEventForm(editForm){
+    render(editForm, this.tripEventsList.getElement());
+    render(new EventOffersView(editForm.tripEvent, this.offersByType),editForm.getElement().querySelector('.event__details'));
+    render(new EventDestinationView(editForm.tripEvent),editForm.getElement().querySelector('.event__details'));
   }
 
-  createPointsMarkup() {
-    this.pointsList.classList.add('.trip-events__list');
-    render(this.pointsList, this.tripPointsSection);
-    render(this.editMenu.getElement(), this.pointsList);
-    render(this.pointMenu.getElement(), this.pointsList);
-    for (let i = 0; i < 3; i++) { //Пока что магические числа, вскоре исправлю
-      render(this.tripPoint.getElement(), this.pointsList);
+  init(){
+    render(new SortView(), this.tripEventsComponent);
+    render(this.tripEventsList, this.tripEventsComponent);
+
+    this.renderTripEventForm(this.addEvent);
+    this.renderTripEventForm(this.editEvent);
+    for (let i = minIndex; i<this.tripEvents.length; i++){
+      render(new EventView(this.tripEvents[i],this.offersByType),this.tripEventsList.getElement());
     }
   }
 }
