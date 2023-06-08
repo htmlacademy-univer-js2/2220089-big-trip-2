@@ -1,37 +1,24 @@
-import dayjs from 'dayjs';
-
-const EVENT_DATE_FORMAT = 'MMM D';
-const TIME_FORMAT = 'H:mm';
-const FORM_DATE_FORMAT = 'DD/MM/YY';
-const BASIC_DATE_FORMAT = 'DD/MM/YY H:mm';
-
-const getItemFromItemsById = (items, id) => (items.find((item) => item.id === id));
-
-const getRandomItemFromItems = (items) => items[Math.floor(Math.random() * items.length)];
-const getRandomPrice = () => Math.floor(Math.random() * 1000) + 100;
-
-const getRandomId = () => Math.floor(Math.random() * 100) + 1;
-
-const getRandomSliceFromItems = (items) => {
-  const n = Math.floor(Math.random() * (items.length + 1));
-  const shuffled = [...items].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, n);
-};
-//что-то
-const createIDgenerator = () => {
-  let id = 0;
-  return () => ++id;
+const getRandomInteger = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  if(min < 0 || max < 0){
+    return -1;
+  }
+  if(min > max){
+    [min, max] = [max, min];
+  }
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const isEscapeKey = (evt) => evt.key === 'Escape';
-const convertToEventDateTime = (date) => date.substring(0, date.indexOf('T'));
-const convertToEventDate = (date) => dayjs(date).format(EVENT_DATE_FORMAT);
-const convertToDateTime = (date) => date.substring(0, date.indexOf('.'));
-const convertToTime = (date) => dayjs(date).format(TIME_FORMAT);
-const convertToBasicime = (date) => dayjs(date).format(BASIC_DATE_FORMAT);
-const capitalizeType = (type) => type.charAt(0).toUpperCase() + type.slice(1);
-const convertToFormDate = (date) => dayjs(date).format(FORM_DATE_FORMAT);
+const shuffle = (array) => {
+  for(let firstIndex = array.length - 1; firstIndex > 0; firstIndex--) {
+    const randomIndex = Math.floor(Math.random() * (firstIndex + 1));
+    [array[firstIndex], array[randomIndex]] = [array[randomIndex], array[firstIndex]];
+  }
+  return array;
+};
 
-export {getRandomItemFromItems, getRandomPrice, getRandomId, convertToEventDateTime, convertToEventDate,
-  convertToDateTime, convertToTime, capitalizeType, convertToFormDate, createIDgenerator, getRandomSliceFromItems,
-  getItemFromItemsById, convertToBasicime, isEscapeKey};
+const uppperFirstSymbol = (x) => x.charAt(0).toUpperCase() + x.slice(1);
+const type = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
+export {getRandomInteger, shuffle, uppperFirstSymbol, type};
