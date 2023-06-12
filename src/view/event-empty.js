@@ -10,13 +10,13 @@ const createNoEventViewTemplate = (filter) => `<p class="trip-events__msg">${mes
 
 
 export default class NoEventView extends AbstractView{
-  #filter;
-  constructor(filter){
-    super();
-    this.#filter = filter;
-  }
+    #filter;
+    constructor(filter){
+      super();
+      this.#filter = filter;
+    }
 
-  get template() {
-    return createNoEventViewTemplate(this.#filter);
-  }
+    get template() {
+      return createNoEventViewTemplate(this.#filter);
+    }
 }

@@ -15,7 +15,7 @@ const createFilterItemTemplate = (filter, isChecked) => {
 };
 
 const createFilterTemplate = (filterItem) => {
-  const filterItems = filterItem.map((filterItem, index)=>createFilterItemTemplate(filterItem, index === 0)).join('');
+  const filterItems = filterItem.map((filterItem,index)=>createFilterItemTemplate(filterItem, index===0)).join('');
   return (
     `<form class="trip-filters" action="#" method="get">
       ${filterItems}
