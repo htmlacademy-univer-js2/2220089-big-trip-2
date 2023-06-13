@@ -4,119 +4,119 @@ import { render, replace, remove } from '../framework/render';
 import { pointMode } from '../utils/common';
 
 export default class EventPresenter{
-  #eventComponent;
-  #editFormComponent;
-  #eventsListContainer;
-  #event;
-  #offersByType;
-  #changeData;
-  #changePointMode;
-  #pointMode;
+    #eventComponent;
+    #editFormComponent;
+    #eventsListContainer;
+    #event;
+    #offersByType;
+    #changeData;
+    #changePointMode;
+    #pointMode;
 
-  constructor(eventsListContainer, offersByType, changeData, changePointMode) {
-    this.#eventsListContainer = eventsListContainer;
-    this.#offersByType = offersByType;
+    constructor(eventsListContainer, offersByType, changeData, changePointMode) {
+      this.#eventsListContainer = eventsListContainer;
+      this.#offersByType = offersByType;
 
-    this.#changeData = changeData;
-    this.#changePointMode = changePointMode;
+      this.#changeData = changeData;
+      this.#changePointMode = changePointMode;
 
-    this.#pointMode = pointMode.DEFAULT;
+      this.#pointMode = pointMode.DEFAULT;
 
-    this.#eventComponent = null;
-    this.#editFormComponent = null;
-  }
-
-  init(event) {
-    this.#event = event;
-    this.#renderEventComponent();
-  }
-
-  resetEventMode() {
-    if(this.#pointMode === pointMode.EDITING) {
-      this.#replaceFormToPoint();
-    }
-  }
-
-  destroy() {
-    remove(this.#eventComponent);
-    remove(this.#editFormComponent);
-  }
-
-  #renderEventComponent() {
-    const previousEventComponent = this.#eventComponent;
-    const previousEditFormComponent = this.#editFormComponent;
-
-    this.#eventComponent = new EventView(this.#event, this.#offersByType);
-
-    this.#renderEditFormComponent();
-
-    this.#eventComponent.setFormOpenClickHandler(this.#onFormOpenButtonClick);
-    this.#eventComponent.setFavoriteButtonHandler(this.#onFavoriteChangeClick);
-
-    if(previousEventComponent === null || previousEditFormComponent === null) {
-      render(this.#eventComponent, this.#eventsListContainer);
-      return;
+      this.#eventComponent = null;
+      this.#editFormComponent = null;
     }
 
-    if(this.#pointMode === pointMode.DEFAULT) {
-      replace(this.#eventComponent, previousEventComponent);
+    init(event) {
+      this.#event = event;
+      this.#renderEventComponent();
     }
 
-    if(this.#pointMode === pointMode.EDITING) {
-      replace(this.#editFormComponent, previousEditFormComponent);
+    resetEventMode() {
+      if(this.#pointMode === pointMode.EDITING) {
+        this.#replaceFormToPoint();
+      }
     }
 
-    remove(previousEventComponent);
-    remove(previousEditFormComponent);
-  }
+    destroy() {
+      remove(this.#eventComponent);
+      remove(this.#editFormComponent);
+    }
 
-  #renderEditFormComponent() {
-    this.#editFormComponent = new EventEditView(this.#event, this.#offersByType);
+    #renderEventComponent() {
+      const previousEventComponent = this.#eventComponent;
+      const previousEditFormComponent = this.#editFormComponent;
 
-    this.#editFormComponent.setFormSubmitHandler(this.#onFormSubmit);
-    this.#editFormComponent.setFormCloseClickHandler(this.#onFormCloseButtonClick);
-  }
+      this.#eventComponent = new EventView(this.#event, this.#offersByType);
 
-  #replacePointToForm() {
-    replace(this.#editFormComponent, this.#eventComponent);
+      this.#renderEditFormComponent();
 
-    document.addEventListener('keydown', this.#onEscapeKeyDown);
+      this.#eventComponent.setFormOpenClickHandler(this.#onFormOpenButtonClick);
+      this.#eventComponent.setFavoriteButtonHandler(this.#onFavoriteChangeClick);
 
-    this.#changePointMode();
-    this.#pointMode = pointMode.EDITING;
-  }
+      if(previousEventComponent === null || previousEditFormComponent === null) {
+        render(this.#eventComponent, this.#eventsListContainer);
+        return;
+      }
 
-  #replaceFormToPoint() {
-    this.#editFormComponent.reset(this.#event);
-    replace(this.#eventComponent, this.#editFormComponent);
+      if(this.#pointMode === pointMode.DEFAULT) {
+        replace(this.#eventComponent, previousEventComponent);
+      }
 
-    document.removeEventListener('keydown', this.#onEscapeKeyDown);
+      if(this.#pointMode === pointMode.EDITING) {
+        replace(this.#editFormComponent, previousEditFormComponent);
+      }
 
-    this.#pointMode = pointMode.DEFAULT;
-  }
+      remove(previousEventComponent);
+      remove(previousEditFormComponent);
+    }
 
-  #onFormOpenButtonClick = () => {
-    this.#replacePointToForm();
-  };
+    #renderEditFormComponent() {
+      this.#editFormComponent = new EventEditView(this.#event, this.#offersByType);
 
-  #onFormCloseButtonClick = () => {
-    this.#replaceFormToPoint();
-  };
+      this.#editFormComponent.setFormSubmitHandler(this.#onFormSubmit);
+      this.#editFormComponent.setFormCloseClickHandler(this.#onFormCloseButtonClick);
+    }
 
-  #onFormSubmit = (tripEvent) => {
-    this.#changeData(tripEvent);
-    this.#replaceFormToPoint();
-  };
+    #replacePointToForm() {
+      replace(this.#editFormComponent, this.#eventComponent);
 
-  #onEscapeKeyDown = (evt) => {
-    if(evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
+      document.addEventListener('keydown', this.#onEscapeKeyDown);
+
+      this.#changePointMode();
+      this.#pointMode = pointMode.EDITING;
+    }
+
+    #replaceFormToPoint() {
       this.#editFormComponent.reset(this.#event);
-      this.#replaceFormToPoint();
-    }
-  };
+      replace(this.#eventComponent, this.#editFormComponent);
 
-  #onFavoriteChangeClick = () => {
-    this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
-  };
+      document.removeEventListener('keydown', this.#onEscapeKeyDown);
+
+      this.#pointMode = pointMode.DEFAULT;
+    }
+
+    #onFormOpenButtonClick = () => {
+      this.#replacePointToForm();
+    };
+
+    #onFormCloseButtonClick = () => {
+      this.#replaceFormToPoint();
+    };
+
+    #onFormSubmit = (tripEvent) => {
+      this.#changeData(tripEvent);
+      this.#replaceFormToPoint();
+    };
+
+    #onEscapeKeyDown = (evt) => {
+      if(evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        this.#editFormComponent.reset(this.#event);
+        this.#replaceFormToPoint();
+      }
+    };
+
+    #onFavoriteChangeClick = () => {
+      this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
+    };
 }
