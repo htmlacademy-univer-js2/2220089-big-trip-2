@@ -57,13 +57,13 @@ export default class PointsBoardPresenter{
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
-  init() {
-    this.#renderBoard();
-  }
-
   get points() {
     const filteredPoints = filter[this.#filterModel.filterType]([...this.#pointsModel.points]);
     return sortPointsByType[this.#currentSortType](filteredPoints);
+  }
+
+  init() {
+    this.#renderBoard();
   }
 
   createPoint(destroyCallback) {
@@ -138,7 +138,6 @@ export default class PointsBoardPresenter{
     this.#uiBlocker.block();
     switch(userActionType) {
       case UserAction.ADD_POINT:
-        //this.#pointPresenter.setSaving();
         this.#pointNewPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, update);
