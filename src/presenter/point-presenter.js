@@ -3,6 +3,7 @@ import PointEditView from '../view/point-edit-view';
 import { render, replace, remove } from '../framework/render';
 import { UserAction, UpdateType, PointMode } from '../const';
 import { areDatesSame } from '../utils/point-date';
+import { isEscapeKey } from '../utils/common';
 
 export default class PointPresenter{
     #pointComponent;
@@ -153,7 +154,7 @@ export default class PointPresenter{
     };
 
     #escapeKeyDownHandler = (evt) => {
-      if(evt.key === 'Escape' || evt.key === 'Esc') {
+      if(isEscapeKey(evt)) {
         evt.preventDefault();
         this.#editFormComponent.reset(this.#point);
         this.#replaceFormToPoint();
