@@ -2,6 +2,7 @@ import PointEditView from '../view/point-edit-view';
 import { RenderPosition, remove, render } from '../framework/render';
 import { UserAction, UpdateType, TYPES } from '../const';
 import dayjs from 'dayjs';
+import { isEscapeKey } from '../utils/common';
 
 
 export default class PointNewPresenter{
@@ -84,7 +85,7 @@ export default class PointNewPresenter{
     };
 
     #escapeKeyDownHandler = (evt) => {
-      if(evt.key === 'Escape' || evt.key === 'Esc') {
+      if(isEscapeKey(evt)) {
         evt.preventDefault();
         this.destroy();
       }

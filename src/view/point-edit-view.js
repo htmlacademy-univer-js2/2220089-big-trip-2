@@ -116,7 +116,7 @@ const createPointEditTemplate = (point, offersByType, destinations, destinations
             </label>
             <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" ${disabledTag}>
           </div>
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${disabledTag}>${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled || basePrice === 0 ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
           <button class="event__reset-btn" type="reset" ${disabledTag}>${isNewEvent ? 'Cancel' : deleteMessage}</button>
           ${rollUpButton}
         </header>
@@ -261,10 +261,10 @@ export default class PointEditView extends AbstractStatefulView {
     }
   };
 
-  #priceInputHandler = (evt) => {
+  #priceChangeHandler = (evt) => {
     evt.preventDefault();
 
-    this._setState({
+    this.updateElement({
       basePrice: Number(evt.target.value.replace(/[^\d]/g, '')),
     });
   };
@@ -320,7 +320,7 @@ export default class PointEditView extends AbstractStatefulView {
     if(this.#offersByType.length && this.#offersByCurrentType.length) {
       this.element.querySelector('.event__available-offers').addEventListener('click', this.#offerClickHandler);
     }
-    this.element.querySelector('#event-price-1').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('#event-price-1').addEventListener('change', this.#priceChangeHandler);
   };
 
   static parsePointToState(point){
